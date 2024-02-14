@@ -1,7 +1,25 @@
 import AppLayout from '@/components/Layouts/AppLayout'
-import Head from 'next/head'
+import axios from 'axios'
 
-const Dashboard = () => {
+import Head from 'next/head'
+import { useEffect, useState } from 'react'
+
+const Home = () => {
+    const [movies, setMovies] = useState([])
+
+    useEffect(() => {
+        const fetchMovies = async () => {
+            try {
+                const response = await axios.get('api/getPopularMovies')
+                console.log(response)
+                setMovies(response.data.results)
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        fetchMovies()
+    }, [])
+
     return (
         <AppLayout
             header={
@@ -10,9 +28,15 @@ const Dashboard = () => {
                 </h2>
             }>
             <Head>
-                <title>Laravel - Dashboard</title>
+                <title>Laravel - Home</title>
             </Head>
 
+            {movies.map(movie => (
+                <img
+                    // style={{ filter: 'blur(35px)' }}
+                    src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
+                />
+            ))}
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -26,4 +50,4 @@ const Dashboard = () => {
     )
 }
 
-export default Dashboard
+export default Home
