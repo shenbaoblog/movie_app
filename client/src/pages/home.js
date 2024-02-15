@@ -3,6 +3,9 @@ import axios from 'axios'
 
 import Head from 'next/head'
 import { useEffect, useState } from 'react'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import 'swiper/css'
+import { CardActionArea, CardMedia, Typography } from '@mui/material'
 
 const Home = () => {
     const [movies, setMovies] = useState([])
@@ -31,21 +34,45 @@ const Home = () => {
                 <title>Laravel - Home</title>
             </Head>
 
-            {movies.map(movie => (
-                <img
-                    // style={{ filter: 'blur(35px)' }}
-                    src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
-                />
-            ))}
-            <div className="py-12">
-                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div className="p-6 bg-white border-b border-gray-200">
-                            You're logged in!
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <Swiper
+                spaceBetween={30}
+                slidesPerView={5}
+                onSlideChange={() => console.log('slide change')}
+                onSwiper={swiper => console.log(swiper)}
+                breakpoints={{
+                    320: {
+                        slidesPerView: 1,
+                        spaceBetween: 10,
+                    },
+                    480: {
+                        slidesPerView: 3,
+                        spaceBetween: 20,
+                    },
+                    640: {
+                        slidesPerView: 4,
+                        spaceBetween: 30,
+                    },
+                    768: {
+                        slidesPerView: 5,
+                        spaceBetween: 40,
+                    },
+                }}>
+                {movies.map(movie => (
+                    <SwiperSlide key={movie.id}>
+                        <CardActionArea>
+                            <CardMedia
+                                component={'img'}
+                                sx={{
+                                    aspectRatio: '2/3',
+                                }}
+                                image={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
+                                alt={movie.title}
+                            />
+                        </CardActionArea>
+                        <Typography>公開日：{movie.release_date}</Typography>
+                    </SwiperSlide>
+                ))}
+            </Swiper>
         </AppLayout>
     )
 }
