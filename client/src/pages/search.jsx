@@ -9,6 +9,7 @@ import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 
 const search = () => {
+    const [category, setCategory] = useState('all')
     const [results, setResults] = useState([])
     const router = useRouter()
     const { query: searchQuery } = router.query // 受け取るタイミングで、デコードされている可能性がある
@@ -35,6 +36,15 @@ const search = () => {
         }
         fetchMedia()
     }, [searchQuery])
+
+    const filteredResults = results.filter(result => {
+        if (category === 'all') {
+            return true
+        }
+        return result.media_type === category
+    })
+
+    console.log(filteredResults)
     return (
         <AppLayout
             header={
@@ -45,9 +55,11 @@ const search = () => {
             <Head>
                 <title>Laravel - Search</title>
             </Head>
-            <Layout sidebar={<Sidebar />}>
+            <Layout sidebar={<Sidebar  setCategory={setCategory} />}>
                 <Grid container spacing={3}>
-                    <MediaCard />
+                {filteredResults.map((media) => (
+                        <MediaCard item={media} />
+                    ))}
                 </Grid>
             </Layout>
         </AppLayout>
