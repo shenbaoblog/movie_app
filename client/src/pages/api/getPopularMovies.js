@@ -9,7 +9,7 @@ const handler = async (req, res) => {
         console.log('種痘した結果は...', response.data);
     } catch (err) {
         console.log(err);
-        res.status(500).json('エラーが発生しました', err);
+        res.status(500).json({ message: 'エラーが発生しました'});
     }
 };
 
