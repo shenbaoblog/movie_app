@@ -12,7 +12,6 @@ const Layout = ({ children, sidebar }) => {
                 </Grid>
                 <Grid item xs={12} md={9}>
                     {children}
-                    コンテンツ
                 </Grid>
             </Grid>
         </Container>
