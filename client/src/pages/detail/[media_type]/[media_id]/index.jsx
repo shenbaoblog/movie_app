@@ -1,11 +1,24 @@
 import AppLayout from '@/components/Layouts/AppLayout'
+import laravelAxios from '@/lib/laravelAxios'
 import { Box, Container, Grid, Typography } from '@mui/material'
 import axios from 'axios'
 import Head from 'next/head'
-import React from 'react'
+import React, { useEffect } from 'react'
 
 const Detail = ({ detail, media_type, media_id }) => {
-    console.log(detail)
+    // console.log(detail)
+
+    useEffect(() => {
+        const fetchReviews = async () => {
+            try {
+                const response = await laravelAxios.get(`/api/reviews/${media_type}/${media_id}`)
+                console.log("reviews", response.data)
+            } catch(err) {
+                console.log(err)
+            }
+        }
+        fetchReviews()
+    }, [media_type, media_id])
     return (
         <AppLayout
             header={
