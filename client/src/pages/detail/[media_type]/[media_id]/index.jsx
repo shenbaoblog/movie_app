@@ -97,7 +97,7 @@ const Detail = ({ detail, media_type, media_id }) => {
                         <Grid
                             item
                             md={4}
-                            xs={{ display: 'flex', justifyContent: 'center' }}>
+                            xs={12}>
                             <img
                                 width={'70%'}
                                 src={`https://image.tmdb.org/t/p/original${detail.poster_path}`}
