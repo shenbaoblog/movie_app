@@ -21,6 +21,8 @@ import AddIcon from '@mui/icons-material/Add'
 
 const Detail = ({ detail, media_type, media_id }) => {
     const [open, setOpen] = useState(false)
+    const [rating, setRating] = useState(0)
+    const [review, setReview] = useState('')
 
     const handleOpen = () => {
         setOpen(true)
@@ -28,6 +30,16 @@ const Detail = ({ detail, media_type, media_id }) => {
     const handleClose = () => {
         setOpen(false)
     }
+
+    const handleReviewChange = e => {
+        setReview(e.target.value)
+    }
+
+    const handleRatingChange = (e, newValue) => {
+        setRating(newValue)
+    }
+
+    const isDisabled = !rating || !review.trim()
 
     const reviews = [
         {
@@ -179,9 +191,9 @@ const Detail = ({ detail, media_type, media_id }) => {
                     zIndex: 5,
                 }}>
                 <Tooltip title="レビュー追加">
-                    <Fab style={{ background: '#1976d2', color: 'white' }}
-                        onClick={handleOpen}
-                    >
+                    <Fab
+                        style={{ background: '#1976d2', color: 'white' }}
+                        onClick={handleOpen}>
                         <AddIcon />
                     </Fab>
                 </Tooltip>
@@ -203,18 +215,20 @@ const Detail = ({ detail, media_type, media_id }) => {
                     <Typography variant="h6" component="h2">
                         レビューを書く
                     </Typography>
-                    <Rating required />
+                    <Rating
+                        required
+                        onChange={handleRatingChange}
+                        value={rating}
+                    />
                     <TextareaAutosize
                         required
                         minRows={5}
                         placeholder="レビュー内容"
                         style={{ width: '100%', marginTop: '10px' }}
+                        onChange={handleReviewChange}
+                        value={review}
                     />
-                    <Button
-                        variant="outlined"
-                    >
-                        送信
-                    </Button>
+                    <Button variant="outlined" disabled={isDisabled}>送信</Button>
                 </Box>
             </Modal>
         </AppLayout>
