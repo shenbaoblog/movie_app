@@ -1,46 +1,68 @@
 import AppLayout from '@/components/Layouts/AppLayout'
 import laravelAxios from '@/lib/laravelAxios'
-import { Box, Card, CardContent, Container, Grid, Rating, Typography } from '@mui/material'
+import {
+    Box,
+    Button,
+    Card,
+    CardContent,
+    Container,
+    Fab,
+    Grid,
+    Modal,
+    Rating,
+    TextareaAutosize,
+    Tooltip,
+    Typography,
+} from '@mui/material'
 import axios from 'axios'
 import Head from 'next/head'
 import React, { useEffect, useState } from 'react'
+import AddIcon from '@mui/icons-material/Add'
 
 const Detail = ({ detail, media_type, media_id }) => {
-    // console.log(detail)
+    const [open, setOpen] = useState(false)
+
+    const handleOpen = () => {
+        setOpen(true)
+    }
+    const handleClose = () => {
+        setOpen(false)
+    }
 
     const reviews = [
         {
             id: 1,
-            content: "面白かった",
+            content: '面白かった',
             rating: 4,
-            user : {
-                name: "山田花子"
+            user: {
+                name: '山田花子',
             },
         },
         {
             id: 2,
-            content: "最悪",
+            content: '最悪',
             rating: 1,
-            user : {
-                name: "田村"
+            user: {
+                name: '田村',
             },
         },
         {
             id: 3,
-            content: "普通",
+            content: '普通',
             rating: 3,
-            user : {
-                name: "オギコ"
+            user: {
+                name: 'オギコ',
             },
         },
-
-    ];
+    ]
     useEffect(() => {
         const fetchReviews = async () => {
             try {
-                const response = await laravelAxios.get(`/api/reviews/${media_type}/${media_id}`)
-                console.log("reviews", response.data)
-            } catch(err) {
+                const response = await laravelAxios.get(
+                    `/api/reviews/${media_type}/${media_id}`,
+                )
+                console.log('reviews', response.data)
+            } catch (err) {
                 console.log(err)
             }
         }
@@ -94,10 +116,7 @@ const Detail = ({ detail, media_type, media_id }) => {
                         sx={{ color: 'white' }}
                         container
                         alignItems={'center'}>
-                        <Grid
-                            item
-                            md={4}
-                            xs={12}>
+                        <Grid item md={4} xs={12}>
                             <img
                                 width={'70%'}
                                 src={`https://image.tmdb.org/t/p/original${detail.poster_path}`}
@@ -119,24 +138,30 @@ const Detail = ({ detail, media_type, media_id }) => {
                 </Container>
             </Box>
             {/* レビュー内容 */}
-            <Container sx={{py: 4}}>
+            <Container sx={{ py: 4 }}>
                 <Typography
-                component={"h1"}
-                variant='h4'
-                align='center'
-                gutterBottom>
+                    component={'h1'}
+                    variant="h4"
+                    align="center"
+                    gutterBottom>
                     レビュー一覧
                 </Typography>
                 <Grid container spacing={3}>
-                    {reviews.map((review) => (
+                    {reviews.map(review => (
                         <Grid item key={review.id} xs={12} md={4}>
                             <Card>
                                 <CardContent>
-                                    <Typography variant="h6" component={"h6"} gutterBottom>
+                                    <Typography
+                                        variant="h6"
+                                        component={'h6'}
+                                        gutterBottom>
                                         {review.user.name}
                                     </Typography>
                                     <Rating value={review.rating} readOnly />
-                                    <Typography variant="body2" color="textSecondary" paragraph>
+                                    <Typography
+                                        variant="body2"
+                                        color="textSecondary"
+                                        paragraph>
                                         {review.content}
                                     </Typography>
                                 </CardContent>
@@ -145,6 +170,53 @@ const Detail = ({ detail, media_type, media_id }) => {
                     ))}
                 </Grid>
             </Container>
+            {/* レビュー追加ボタン */}
+            <Box
+                sx={{
+                    position: 'fixed',
+                    bottom: '16px',
+                    right: '16px',
+                    zIndex: 5,
+                }}>
+                <Tooltip title="レビュー追加">
+                    <Fab style={{ background: '#1976d2', color: 'white' }}
+                        onClick={handleOpen}
+                    >
+                        <AddIcon />
+                    </Fab>
+                </Tooltip>
+            </Box>
+            {/* モーダルウィンドウ */}
+            <Modal open={open} onClose={handleClose}>
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: 400,
+                        bgcolor: 'background.paper',
+                        border: '2px solid #000',
+                        boxShadow: 24,
+                        p: 4,
+                    }}>
+                    <Typography variant="h6" component="h2">
+                        レビューを書く
+                    </Typography>
+                    <Rating required />
+                    <TextareaAutosize
+                        required
+                        minRows={5}
+                        placeholder="レビュー内容"
+                        style={{ width: '100%', marginTop: '10px' }}
+                    />
+                    <Button
+                        variant="outlined"
+                    >
+                        送信
+                    </Button>
+                </Box>
+            </Modal>
         </AppLayout>
     )
 }
