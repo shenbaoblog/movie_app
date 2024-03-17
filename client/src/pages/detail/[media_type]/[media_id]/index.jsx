@@ -44,7 +44,7 @@ const Detail = ({ detail, media_type, media_id }) => {
     const handleReviewAdd = async () => {
         try {
             const response = await laravelAxios.post(
-                `api/reviews`,
+                `/api/reviews`,
                 {
                     content: review,
                     rating,
@@ -56,7 +56,7 @@ const Detail = ({ detail, media_type, media_id }) => {
             setOpen(false)
         } catch (err) {
             console.log(err)
-
+        }
     }
     const reviews = [
         {
