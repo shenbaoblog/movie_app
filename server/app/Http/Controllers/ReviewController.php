@@ -47,4 +47,14 @@ class ReviewController extends Controller
         $review->load('user'); // 1つのレビューが特定のユーザーに属している場合、userという関連が定義されていれば、$review->load('user')を使ってそのユーザーの情報をレビューと一緒に読み込むことができます。
         return response()->json($review);
     }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Review $review)
+    {
+        $review->delete();
+
+        return response()->json(["message" => "正常にレビューを削除しました。" , 204]);
+    }
 }
