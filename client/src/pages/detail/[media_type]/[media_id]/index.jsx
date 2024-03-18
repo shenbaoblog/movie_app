@@ -18,12 +18,14 @@ import axios from 'axios'
 import Head from 'next/head'
 import React, { useEffect, useState } from 'react'
 import AddIcon from '@mui/icons-material/Add'
+import StarIcon from '@mui/icons-material/Star'
 
 const Detail = ({ detail, media_type, media_id }) => {
     const [open, setOpen] = useState(false)
     const [rating, setRating] = useState(0)
     const [review, setReview] = useState('')
     const [reviews, setReviews] = useState([])
+    const [averageRating, setAverageRating] = useState(0)
 
     const handleOpen = () => {
         setOpen(true)
@@ -61,8 +63,22 @@ const Detail = ({ detail, media_type, media_id }) => {
 
             setReview('')
             setRating(0)
+
+            // レビューの平均値を再計算
+            const updatedReviews = [...reviews, newReview] // NOTE: stateで管理している値は、実際の値とずれすので定数に格納
+            updateAverageRating(updatedReviews)
+
         } catch (err) {
             console.log(err)
+        }
+    }
+
+    const updateAverageRating = (updatedReviews) => {
+        if(updatedReviews.length > 0) {
+            const totalRating = updatedReviews.reduce((acc, review) => acc + review.rating, 0)
+            const average = (totalRating / updatedReviews.length).toFixed(1)
+            setAverageRating(average)
+            console.log('average', average)
         }
     }
 
@@ -73,7 +89,9 @@ const Detail = ({ detail, media_type, media_id }) => {
                     `/api/reviews/${media_type}/${media_id}`,
                 )
                 console.log('reviews', response.data)
-                setReviews(response.data)
+                const fetchReviews = response.data
+                setReviews(fetchReviews)
+                updateAverageRating(fetchReviews)
             } catch (err) {
                 console.log(err)
             }
@@ -90,7 +108,7 @@ const Detail = ({ detail, media_type, media_id }) => {
             <Head>
                 <title>Laravel - Detail</title>
             </Head>
-            {/* 映画情報 */}
+            {/* 作品情報 */}
             <Box
                 sx={{
                     position: 'relative',
@@ -140,6 +158,28 @@ const Detail = ({ detail, media_type, media_id }) => {
                                 {detail.title || detail.name}
                             </Typography>
                             <Typography paragraph>{detail.overview}</Typography>
+                            <Box
+                                gap={2}
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    mb: 2,
+                                }}
+                            >
+                                <Rating
+                                    readOnly
+                                    precision={0.5}
+                                    value={parseFloat(averageRating)}
+                                    emptyIcon={<StarIcon style={{ color: "white" }} />}
+                                />
+                                <Typography
+                                    sx={{
+                                        ml: 1,
+                                        fontSize: '1.5rem',
+                                        fontWeight: 'bold',
+                                    }}
+                                >{averageRating}</Typography>
+                            </Box>
                             <Typography variant="h6">
                                 {media_type == 'movie'
                                     ? `公開日:${detail.release_date}`
@@ -149,7 +189,7 @@ const Detail = ({ detail, media_type, media_id }) => {
                     </Grid>
                 </Container>
             </Box>
-            {/* レビュー内容 */}
+            {/* レビュー一覧 */}
             <Container sx={{ py: 4 }}>
                 <Typography
                     component={'h1'}
