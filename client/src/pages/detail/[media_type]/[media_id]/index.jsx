@@ -20,6 +20,7 @@ import Head from 'next/head'
 import React, { useEffect, useState } from 'react'
 import AddIcon from '@mui/icons-material/Add'
 import StarIcon from '@mui/icons-material/Star'
+import { useAuth } from '@/hooks/auth'
 
 const Detail = ({ detail, media_type, media_id }) => {
     const [open, setOpen] = useState(false)
@@ -27,6 +28,7 @@ const Detail = ({ detail, media_type, media_id }) => {
     const [review, setReview] = useState('')
     const [reviews, setReviews] = useState([])
     const [averageRating, setAverageRating] = useState(0)
+    const { user } = useAuth({middleware: 'auth'})
 
     const handleOpen = () => {
         setOpen(true)
@@ -80,19 +82,23 @@ const Detail = ({ detail, media_type, media_id }) => {
             const average = (totalRating / updatedReviews.length).toFixed(1)
             setAverageRating(average)
             console.log('average', average)
+        } else {
+            setAverageRating(null)
         }
     }
 
     const handleDelete = async (id) => {
         console.log('id', id)
-        try {
-            const response = await laravelAxios.delete(`/api/reviews/${id}`)
-            console.log('response', response)
-            const filteredReviews = reviews.filter(review => review.id !== id)
-            setReviews(filteredReviews)
-            updateAverageRating(filteredReviews)
-        } catch (err) {
-            console.log(err)
+        if (window.confirm('レビューを削除してもよろしいですか？')) {
+            try {
+                const response = await laravelAxios.delete(`/api/reviews/${id}`)
+                console.log('response', response)
+                const filteredReviews = reviews.filter(review => review.id !== id)
+                setReviews(filteredReviews)
+                updateAverageRating(filteredReviews)
+            } catch (err) {
+                console.log(err)
+            }
         }
     }
 
@@ -230,14 +236,16 @@ const Detail = ({ detail, media_type, media_id }) => {
                                         paragraph>
                                         {review.content}
                                     </Typography>
-                                    <Grid
-                                        sx={{display: 'flex', justifyContent: 'flex-end'}}
-                                    >
-                                        <ButtonGroup>
-                                            <Button>編集</Button>
-                                            <Button color="error" onClick={() => handleDelete(review.id)}>削除</Button>
-                                        </ButtonGroup>
-                                    </Grid>
+                                    {user?.id === review.user.id && (
+                                        <Grid
+                                            sx={{display: 'flex', justifyContent: 'flex-end'}}
+                                        >
+                                            <ButtonGroup>
+                                                <Button>編集</Button>
+                                                <Button color="error" onClick={() => handleDelete(review.id)}>削除</Button>
+                                            </ButtonGroup>
+                                        </Grid>
+                                    )}
                                 </CardContent>
                             </Card>
                         </Grid>
