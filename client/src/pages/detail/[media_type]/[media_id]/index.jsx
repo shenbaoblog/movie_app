@@ -28,6 +28,10 @@ const Detail = ({ detail, media_type, media_id }) => {
     const [review, setReview] = useState('')
     const [reviews, setReviews] = useState([])
     const [averageRating, setAverageRating] = useState(0)
+    const [editMode, setEditMode] = useState(null)
+    const [editedRating, setEditedRating] = useState(null)
+    const [editedContent, setEditedContent] = useState('')
+
     const { user } = useAuth({middleware: 'auth'})
 
     const handleOpen = () => {
@@ -45,7 +49,12 @@ const Detail = ({ detail, media_type, media_id }) => {
         setRating(newValue)
     }
 
-    const isDisabled = !rating || !review.trim()
+    const isButtonDisabled = (rating, content) => {
+        return !rating || !content.trim()
+    }
+
+    const isReviewButtonDisabled = isButtonDisabled(rating, review)
+    const isEditButtonDisabled = isButtonDisabled(editedRating, editedContent)
 
     const handleReviewAdd = async () => {
         handleClose()
@@ -99,6 +108,26 @@ const Detail = ({ detail, media_type, media_id }) => {
             } catch (err) {
                 console.log(err)
             }
+        }
+    }
+
+    // 編集ボタンを押されたときの処理
+    const handleEdit = (review) => {
+        setEditMode(review.id)
+        setEditedRating(review.rating)
+        setEditedContent(review.content)
+    }
+
+    // 編集確定ボタンを押したときの処理
+    const handleConfirmEdit = async (reviewId) => {
+        console.log('reviewId', reviewId)
+        try {
+            const response = await laravelAxios.put(`/api/reviews/${reviewId}`, {
+                rating: editedRating,
+                content: editedContent,
+            })
+        } catch (err) {
+            console.log(err)
         }
     }
 
@@ -223,27 +252,53 @@ const Detail = ({ detail, media_type, media_id }) => {
                         <Grid item key={review.id} xs={12} md={4}>
                             <Card>
                                 <CardContent>
+                                    {/* ユーザー名 */}
                                     <Typography
                                         variant="h6"
                                         component={'h6'}
                                         gutterBottom>
                                         {review.user.name}
                                     </Typography>
-                                    <Rating value={review.rating} readOnly />
-                                    <Typography
-                                        variant="body2"
-                                        color="textSecondary"
-                                        paragraph>
-                                        {review.content}
-                                    </Typography>
+                                    {editMode === review.id ? (
+                                        <>
+                                        {/* 編集ボタンを押されたレビューの見た目 */}
+                                            <Rating value={editedRating} onChange={(e, newValue) => setEditedRating(newValue)} />
+                                            <TextareaAutosize
+                                                minRows={3}
+                                                style={{width: "100%"}}
+                                                value={editedContent}
+                                                onChange={(e) => setEditedContent(e.target.value)}
+                                             />
+                                        </>
+                                    ) : (
+                                        <>
+                                            {/* 星 */}
+                                            <Rating value={review.rating} readOnly />
+                                            {/* レビュー内容 */}
+                                            <Typography
+                                                variant="body2"
+                                                color="textSecondary"
+                                                paragraph>
+                                                {review.content}
+                                            </Typography>
+                                        </>
+                                    )}
                                     {user?.id === review.user.id && (
                                         <Grid
                                             sx={{display: 'flex', justifyContent: 'flex-end'}}
                                         >
-                                            <ButtonGroup>
-                                                <Button>編集</Button>
-                                                <Button color="error" onClick={() => handleDelete(review.id)}>削除</Button>
-                                            </ButtonGroup>
+                                            {editMode === review.id ? (
+                                                // 編集中の表示
+                                                <Button
+                                                    onClick={() => handleConfirmEdit(review.id)}
+                                                    disabled={isEditButtonDisabled}
+                                                >編集確定</Button>
+                                            ) : (
+                                                <ButtonGroup>
+                                                    <Button onClick={() => handleEdit(review)}>編集</Button>
+                                                    <Button color="error" onClick={() => handleDelete(review.id)}>削除</Button>
+                                                </ButtonGroup>
+                                            )}
                                         </Grid>
                                     )}
                                 </CardContent>
@@ -300,7 +355,7 @@ const Detail = ({ detail, media_type, media_id }) => {
                     />
                     <Button
                         variant="outlined"
-                        disabled={isDisabled}
+                        disabled={isReviewButtonDisabled}
                         onClick={handleReviewAdd}>
                         送信
                     </Button>
