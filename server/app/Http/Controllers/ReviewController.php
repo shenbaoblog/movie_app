@@ -49,6 +49,24 @@ class ReviewController extends Controller
     }
 
     /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Review $review)
+    {
+        $validatedData = $request->validate([
+            'content' => 'required|string',
+            'rating' => 'required|integer',
+        ]);
+
+        $review->update([
+            'content' => $validatedData['content'],
+            'rating' => $validatedData['rating'],
+        ]);
+
+        return response()->json($review);
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy(Review $review)

@@ -100,7 +100,7 @@ const Detail = ({ detail, media_type, media_id }) => {
         console.log('id', id)
         if (window.confirm('レビューを削除してもよろしいですか？')) {
             try {
-                const response = await laravelAxios.delete(`/api/reviews/${id}`)
+                const response = await laravelAxios.delete(`/api/review/${id}`)
                 console.log('response', response)
                 const filteredReviews = reviews.filter(review => review.id !== id)
                 setReviews(filteredReviews)
@@ -122,10 +122,26 @@ const Detail = ({ detail, media_type, media_id }) => {
     const handleConfirmEdit = async (reviewId) => {
         console.log('reviewId', reviewId)
         try {
-            const response = await laravelAxios.put(`/api/reviews/${reviewId}`, {
-                rating: editedRating,
+            const response = await laravelAxios.put(`/api/review/${reviewId}`, {
                 content: editedContent,
+                rating: editedRating,
             })
+            console.log('updatedResponse', response)
+
+            const updatedReview = response.data
+            const updatedReviews = reviews.map((review) => {
+                if (review.id === reviewId) {
+                    return {
+                        ...review,
+                        content: updatedReview.content,
+                        rating: updatedReview.rating,
+                    }
+                }
+                return review
+            })
+            setReviews(updatedReviews)
+            updateAverageRating(updatedReviews)
+            setEditMode(null)
         } catch (err) {
             console.log(err)
         }
