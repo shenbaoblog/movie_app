@@ -21,6 +21,7 @@ import React, { useEffect, useState } from 'react'
 import AddIcon from '@mui/icons-material/Add'
 import StarIcon from '@mui/icons-material/Star'
 import { useAuth } from '@/hooks/auth'
+import Link from 'next/link'
 
 const Detail = ({ detail, media_type, media_id }) => {
     const [open, setOpen] = useState(false)
@@ -290,6 +291,7 @@ const Detail = ({ detail, media_type, media_id }) => {
                                         <>
                                             {/* 星 */}
                                             <Rating value={review.rating} readOnly />
+                                            <Link href={`/detail/${media_type}/${media_id}/review/${review.id}`}>
                                             {/* レビュー内容 */}
                                             <Typography
                                                 variant="body2"
@@ -297,6 +299,7 @@ const Detail = ({ detail, media_type, media_id }) => {
                                                 paragraph>
                                                 {review.content}
                                             </Typography>
+                                            </Link>
                                         </>
                                     )}
                                     {user?.id === review.user.id && (
