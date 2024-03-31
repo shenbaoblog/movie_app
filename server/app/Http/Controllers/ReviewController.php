@@ -49,6 +49,23 @@ class ReviewController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     */
+    public function show(Review $review)
+    {
+        $review->load('user','comments');
+        return response()->json($review);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Review $review)
+    {
+        //
+    }
+
+    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Review $review)

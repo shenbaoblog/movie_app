@@ -15,6 +15,7 @@ const ReviewDetail = () => {
     const fetchReviewDetail = async () => {
       try {
         const response = await laravelAxios.get(`api/review/${reviewId}`)
+        console.log(response.data)
       } catch (err) {
         console.log(err)
       }
