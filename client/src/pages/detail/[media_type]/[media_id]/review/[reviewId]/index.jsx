@@ -134,7 +134,7 @@ const ReviewDetail = () => {
             </Box>
 
             {/* コメント */}
-            <CommentList comments={comments} />
+            <CommentList comments={comments}  setComments={setComments} />
           </>
         ) : (
           <div>loading...</div>

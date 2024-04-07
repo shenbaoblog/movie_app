@@ -2,7 +2,7 @@ import { ButtonGroup, Card, CardContent, Grid, Typography } from '@mui/material'
 import React from 'react'
 import Button from './Button'
 
-const Comment = ({comment}) => {
+const Comment = ({comment, onDelete}) => {
     console.log(comment)
   return (
     <Card>
@@ -24,7 +24,7 @@ const Comment = ({comment}) => {
             <Grid container justifyContent="flex-end">
             <ButtonGroup>
                 <Button>編集</Button>
-                <Button color="error">削除</Button>
+                <Button color="error" onClick={() => onDelete(comment.id)}>削除</Button>
             </ButtonGroup>
             </Grid>
         </CardContent>

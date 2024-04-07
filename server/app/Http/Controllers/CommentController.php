@@ -74,6 +74,8 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
-        //
+        $comment->delete();
+
+        return response()->json(["message" => "無事に削除できました"]);
     }
 }
