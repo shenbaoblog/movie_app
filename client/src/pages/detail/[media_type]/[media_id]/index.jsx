@@ -33,7 +33,7 @@ const Detail = ({ detail, media_type, media_id }) => {
     const [editedRating, setEditedRating] = useState(null)
     const [editedContent, setEditedContent] = useState('')
 
-    const { user } = useAuth({middleware: 'auth'})
+    const { user } = useAuth({ middleware: 'auth' })
 
     const handleOpen = () => {
         setOpen(true)
@@ -60,15 +60,12 @@ const Detail = ({ detail, media_type, media_id }) => {
     const handleReviewAdd = async () => {
         handleClose()
         try {
-            const response = await laravelAxios.post(
-                `/api/reviews`,
-                {
-                    content: review,
-                    rating,
-                    media_type,
-                    media_id,
-                },
-            )
+            const response = await laravelAxios.post(`/api/reviews`, {
+                content: review,
+                rating,
+                media_type,
+                media_id,
+            })
             // console.log('response', response.data)
             const newReview = response.data
             setReviews([...reviews, newReview])
@@ -80,15 +77,17 @@ const Detail = ({ detail, media_type, media_id }) => {
             // レビューの平均値を再計算
             const updatedReviews = [...reviews, newReview] // NOTE: stateで管理している値は、実際の値とずれすので定数に格納
             updateAverageRating(updatedReviews)
-
         } catch (err) {
             console.log(err)
         }
     }
 
-    const updateAverageRating = (updatedReviews) => {
-        if(updatedReviews.length > 0) {
-            const totalRating = updatedReviews.reduce((acc, review) => acc + review.rating, 0)
+    const updateAverageRating = updatedReviews => {
+        if (updatedReviews.length > 0) {
+            const totalRating = updatedReviews.reduce(
+                (acc, review) => acc + review.rating,
+                0,
+            )
             const average = (totalRating / updatedReviews.length).toFixed(1)
             setAverageRating(average)
             console.log('average', average)
@@ -97,13 +96,15 @@ const Detail = ({ detail, media_type, media_id }) => {
         }
     }
 
-    const handleDelete = async (id) => {
+    const handleDelete = async id => {
         console.log('id', id)
         if (window.confirm('レビューを削除してもよろしいですか？')) {
             try {
                 const response = await laravelAxios.delete(`/api/review/${id}`)
                 console.log('response', response)
-                const filteredReviews = reviews.filter(review => review.id !== id)
+                const filteredReviews = reviews.filter(
+                    review => review.id !== id,
+                )
                 setReviews(filteredReviews)
                 updateAverageRating(filteredReviews)
             } catch (err) {
@@ -113,14 +114,14 @@ const Detail = ({ detail, media_type, media_id }) => {
     }
 
     // 編集ボタンを押されたときの処理
-    const handleEdit = (review) => {
+    const handleEdit = review => {
         setEditMode(review.id)
         setEditedRating(review.rating)
         setEditedContent(review.content)
     }
 
     // 編集確定ボタンを押したときの処理
-    const handleConfirmEdit = async (reviewId) => {
+    const handleConfirmEdit = async reviewId => {
         console.log('reviewId', reviewId)
         try {
             const response = await laravelAxios.put(`/api/review/${reviewId}`, {
@@ -130,7 +131,7 @@ const Detail = ({ detail, media_type, media_id }) => {
             console.log('updatedResponse', response)
 
             const updatedReview = response.data
-            const updatedReviews = reviews.map((review) => {
+            const updatedReviews = reviews.map(review => {
                 if (review.id === reviewId) {
                     return {
                         ...review,
@@ -230,21 +231,23 @@ const Detail = ({ detail, media_type, media_id }) => {
                                     display: 'flex',
                                     alignItems: 'center',
                                     mb: 2,
-                                }}
-                            >
+                                }}>
                                 <Rating
                                     readOnly
                                     precision={0.5}
                                     value={parseFloat(averageRating)}
-                                    emptyIcon={<StarIcon style={{ color: "white" }} />}
+                                    emptyIcon={
+                                        <StarIcon style={{ color: 'white' }} />
+                                    }
                                 />
                                 <Typography
                                     sx={{
                                         ml: 1,
                                         fontSize: '1.5rem',
                                         fontWeight: 'bold',
-                                    }}
-                                >{averageRating}</Typography>
+                                    }}>
+                                    {averageRating}
+                                </Typography>
                             </Box>
                             <Typography variant="h6">
                                 {media_type == 'movie'
@@ -278,44 +281,79 @@ const Detail = ({ detail, media_type, media_id }) => {
                                     </Typography>
                                     {editMode === review.id ? (
                                         <>
-                                        {/* 編集ボタンを押されたレビューの見た目 */}
-                                            <Rating value={editedRating} onChange={(e, newValue) => setEditedRating(newValue)} />
+                                            {/* 編集ボタンを押されたレビューの見た目 */}
+                                            <Rating
+                                                value={editedRating}
+                                                onChange={(e, newValue) =>
+                                                    setEditedRating(newValue)
+                                                }
+                                            />
                                             <TextareaAutosize
                                                 minRows={3}
-                                                style={{width: "100%"}}
+                                                style={{ width: '100%' }}
                                                 value={editedContent}
-                                                onChange={(e) => setEditedContent(e.target.value)}
-                                             />
+                                                onChange={e =>
+                                                    setEditedContent(
+                                                        e.target.value,
+                                                    )
+                                                }
+                                            />
                                         </>
                                     ) : (
                                         <>
                                             {/* 星 */}
-                                            <Rating value={review.rating} readOnly />
-                                            <Link href={`/detail/${media_type}/${media_id}/review/${review.id}`}>
-                                            {/* レビュー内容 */}
-                                            <Typography
-                                                variant="body2"
-                                                color="textSecondary"
-                                                paragraph>
-                                                {review.content}
-                                            </Typography>
+                                            <Rating
+                                                value={review.rating}
+                                                readOnly
+                                            />
+                                            <Link
+                                                href={`/detail/${media_type}/${media_id}/review/${review.id}`}>
+                                                {/* レビュー内容 */}
+                                                <Typography
+                                                    variant="body2"
+                                                    color="textSecondary"
+                                                    paragraph>
+                                                    {review.content}
+                                                </Typography>
                                             </Link>
                                         </>
                                     )}
                                     {user?.id === review.user.id && (
                                         <Grid
-                                            sx={{display: 'flex', justifyContent: 'flex-end'}}
-                                        >
+                                            sx={{
+                                                display: 'flex',
+                                                justifyContent: 'flex-end',
+                                            }}>
                                             {editMode === review.id ? (
                                                 // 編集中の表示
                                                 <Button
-                                                    onClick={() => handleConfirmEdit(review.id)}
-                                                    disabled={isEditButtonDisabled}
-                                                >編集確定</Button>
+                                                    onClick={() =>
+                                                        handleConfirmEdit(
+                                                            review.id,
+                                                        )
+                                                    }
+                                                    disabled={
+                                                        isEditButtonDisabled
+                                                    }>
+                                                    編集確定
+                                                </Button>
                                             ) : (
                                                 <ButtonGroup>
-                                                    <Button onClick={() => handleEdit(review)}>編集</Button>
-                                                    <Button color="error" onClick={() => handleDelete(review.id)}>削除</Button>
+                                                    <Button
+                                                        onClick={() =>
+                                                            handleEdit(review)
+                                                        }>
+                                                        編集
+                                                    </Button>
+                                                    <Button
+                                                        color="error"
+                                                        onClick={() =>
+                                                            handleDelete(
+                                                                review.id,
+                                                            )
+                                                        }>
+                                                        削除
+                                                    </Button>
                                                 </ButtonGroup>
                                             )}
                                         </Grid>
