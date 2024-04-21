@@ -22,14 +22,11 @@ const search = () => {
                 const response = await axios.get(
                     `api/searchMedia?searchQuery=${searchQuery}`,
                 ) // デコードされたものがサーバー用ファイルに渡されている可能性がある
-                console.log(response)
                 const searchResults = response.data.results
-                console.log(searchResults)
                 const validResults = searchResults.filter(
                     item =>
                         item.media_type == 'movie' || item.media_type == 'tv',
                 )
-                console.log(validResults)
                 setResults(validResults)
             } catch (err) {
                 console.log(err)
@@ -47,7 +44,6 @@ const search = () => {
         return result.media_type === category
     })
 
-    console.log(filteredResults)
     return (
         <AppLayout
             header={

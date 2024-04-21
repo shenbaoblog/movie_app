@@ -10,7 +10,6 @@ import React from 'react'
 import Button from './Button'
 
 const Comment = ({ comment, editMode, editedContent, onDelete, handleEdit, handleConfirmEdit, setEditedContent }) => {
-    console.log(comment)
     return (
         <Card>
             <CardContent>

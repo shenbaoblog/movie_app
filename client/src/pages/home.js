@@ -17,7 +17,6 @@ const Home = () => {
         const fetchMovies = async () => {
             try {
                 const response = await axios.get('api/getPopularMovies')
-                console.log(response)
                 setMovies(response.data.results)
             } catch (err) {
                 console.log(err)
@@ -41,8 +40,6 @@ const Home = () => {
             <Swiper
                 spaceBetween={30}
                 slidesPerView={5}
-                onSlideChange={() => console.log('slide change')}
-                onSwiper={swiper => console.log(swiper)}
                 breakpoints={{
                     320: {
                         slidesPerView: 1,

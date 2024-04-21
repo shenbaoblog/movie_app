@@ -69,10 +69,8 @@ const Detail = ({ detail, media_type, media_id }) => {
                 media_type,
                 media_id,
             })
-            // console.log('response', response.data)
             const newReview = response.data
             setReviews([...reviews, newReview])
-            console.log('reviews', reviews)
 
             setReview('')
             setRating(0)
@@ -93,18 +91,15 @@ const Detail = ({ detail, media_type, media_id }) => {
             )
             const average = (totalRating / updatedReviews.length).toFixed(1)
             setAverageRating(average)
-            console.log('average', average)
         } else {
             setAverageRating(null)
         }
     }
 
     const handleDelete = async id => {
-        console.log('id', id)
         if (window.confirm('レビューを削除してもよろしいですか？')) {
             try {
                 const response = await laravelAxios.delete(`/api/review/${id}`)
-                console.log('response', response)
                 const filteredReviews = reviews.filter(
                     review => review.id !== id,
                 )
@@ -125,13 +120,11 @@ const Detail = ({ detail, media_type, media_id }) => {
 
     // 編集確定ボタンを押したときの処理
     const handleConfirmEdit = async reviewId => {
-        console.log('reviewId', reviewId)
         try {
             const response = await laravelAxios.put(`/api/review/${reviewId}`, {
                 content: editedContent,
                 rating: editedRating,
             })
-            console.log('updatedResponse', response)
 
             const updatedReview = response.data
             const updatedReviews = reviews.map(review => {
@@ -158,7 +151,6 @@ const Detail = ({ detail, media_type, media_id }) => {
                 media_type: media_type,
                 media_id: media_id,
             })
-            console.log('response', response)
             setIsFavorite(response.data.status === 'added')
         } catch (err) {
             console.log(err)
@@ -177,12 +169,10 @@ const Detail = ({ detail, media_type, media_id }) => {
                         },
                     }),
                 ])
-                console.log('reviewResponse', reviewResponse.data)
                 const fetchReviews = reviewResponse.data
                 setReviews(fetchReviews)
                 updateAverageRating(fetchReviews)
 
-                console.log('favoriteResponse', favoriteResponse.data)
                 setIsFavorite(favoriteResponse.data)
             } catch (err) {
                 console.log(err)

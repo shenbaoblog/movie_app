@@ -12,7 +12,6 @@ const CommentList = ({ comments, setComments }) => {
             const response = await laravelAxios.delete(
                 `api/comments/${commentId}`,
             )
-            console.log(response.data)
 
             const filteredComments = comments.filter(
                 comment => comment.id !== commentId,
@@ -36,7 +35,6 @@ const CommentList = ({ comments, setComments }) => {
                     content: editedContent,
                 },
             )
-            console.log(response.data)
             const updatedComment = response.data.content
 
             const updatedComments = comments.map(comment => {

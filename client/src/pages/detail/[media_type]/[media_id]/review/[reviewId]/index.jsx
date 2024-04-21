@@ -15,14 +15,13 @@ const ReviewDetail = () => {
 
   const router = useRouter()
   const { reviewId } = router.query
-  console.log(reviewId)
 
   useEffect(() => {
     if(!reviewId) return
     const fetchReviewDetail = async () => {
       try {
         const response = await laravelAxios.get(`api/review/${reviewId}`)
-        console.log("response", response.data)
+
         setReview(response.data)
         setComments(response.data.comments)
       } catch (err) {
@@ -34,7 +33,6 @@ const ReviewDetail = () => {
 
   const handleChange = (e) => {
     setContent(e.target.value)
-    console.log(content)
   }
 
   const handleCommentAdd = async (e) => {
@@ -43,13 +41,11 @@ const ReviewDetail = () => {
     if(!trimmedContent) {return;}
 
     try {
-      console.log("trimmedContent", trimmedContent);
-      console.log("reviewId", reviewId);
+
       const response = await laravelAxios.post(`api/comments`, {
         content: trimmedContent,
         review_id: reviewId,
       })
-      console.log(response.data)
       const newComment = response.data;
       setComments([...comments, newComment]);
       setContent('');
