@@ -1,3 +1,31 @@
+# 環境構築手順
+
+### パッケージマネージャーのインストール
+```zsh
+npm ci
+```
+
+### .env.localの作成
+```zsh
+cp .env.example .env.local
+```
+
+.env.localにTMDB_API_KEYを追加
+https://developer.themoviedb.org/reference/intro/getting-started
+```zsh
+TMDB_API_KEY=
+```
+
+### サーバー起動
+```zsh
+npm run dev
+```
+
+
+
+
+
+
 # Laravel Breeze - Next.js Edition 🏝️
 
 ## Introduction
