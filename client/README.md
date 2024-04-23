@@ -21,7 +21,8 @@ TMDB_API_KEY=
 npm run dev
 ```
 
-
+### ログイン
+http://localhost:3000/login
 
 
 

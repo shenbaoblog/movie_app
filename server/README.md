@@ -1,3 +1,52 @@
+# 環境構築
+
+### インストール
+```zsh
+composer install
+```
+
+### .envファイルの作成
+```zsh
+cd .env.example .env
+```
+
+APP_KEYの生成
+```zsh
+php artisan key:generate
+```
+
+TMDB_API_KEYの設定
+https://developer.themoviedb.org/reference/intro/getting-started
+```zsh
+TMDB_API_KEY=
+```
+
+DBの設定
+```zsh
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=
+DB_USERNAME=
+DB_PASSWORD=
+```
+
+マイグレーション
+```zsh
+php artisan migrate:fresh --seed
+```
+
+### サーバー起動
+```zsh
+php artisan serve
+```
+
+### フロントサーバ起動
+フロントサーバーを起動後に
+http://localhost:3000/login
+にアクセス
+
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
